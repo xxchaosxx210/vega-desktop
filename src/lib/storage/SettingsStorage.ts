@@ -534,6 +534,7 @@ export class SettingsStorage {
    * "mpv": libmpv rendered under the transparent webview (Windows only).
    */
   getPlayerEngine(): PlayerEngineKind {
+    if (import.meta.env.VITE_TV_HOST === "amazon-vega") return "builtin";
     if(import.meta.env.VITE_LEGACY_WEBOS)return 'libmedia';
     if (!isTauriRuntime()) return "libmedia";
     // Android uses the shared in-app libmedia player by default. The explicit

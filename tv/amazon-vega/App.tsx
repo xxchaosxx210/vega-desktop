@@ -15,8 +15,8 @@ export const App = () => {
     return () => VegaTransport.stop();
   }, []);
   return <View style={styles.container}>{error ? <Text style={styles.text}>{error}</Text> : url ? <WebView style={styles.container}
-    source={{uri:url}} javaScriptEnabled={true} hasTVPreferredFocus={true}
-    allowSystemKeyEvents={true} allowsDefaultMediaControl={true}
+    source={{uri:url}} javaScriptEnabled={true} domStorageEnabled={true} hasTVPreferredFocus={true}
+    allowSystemKeyEvents={true} allowsDefaultMediaControl={true} mediaPlaybackRequiresUserAction={false}
     onShouldStartLoadWithRequest={request => request.url.startsWith(url.slice(0, url.lastIndexOf('/') + 1))}
     onError={event => setError(event.nativeEvent.description)} /> : <Text style={styles.text}>{error || 'Starting Vega…'}</Text>}</View>;
 };

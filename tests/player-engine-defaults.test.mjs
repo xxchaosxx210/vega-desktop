@@ -4,8 +4,8 @@ import {readFileSync} from 'node:fs';
 import {runInNewContext} from 'node:vm';
 import ts from 'typescript';
 
-function engineFor(userAgent, native, saved) {
-  const source=readFileSync(new URL('../src/lib/storage/SettingsStorage.ts',import.meta.url),'utf8').replaceAll('import.meta.env','({})');
+function engineFor(userAgent, native, saved, tvHost) {
+  const source=readFileSync(new URL('../src/lib/storage/SettingsStorage.ts',import.meta.url),'utf8').replaceAll('import.meta.env',JSON.stringify({VITE_TV_HOST:tvHost}));
   const code=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText;
   const module={exports:{}};
   const mocks={
@@ -33,4 +33,14 @@ test('Windows keeps its existing engine defaults and explicit choices',()=>{
 
 test('Android browser keeps libmedia regardless of a saved native engine',()=>{
   assert.equal(engineFor('Android 14',false,'builtin'),'libmedia');
+});
+
+test('Amazon Vega uses HTML video regardless of a saved desktop or Libmedia preference', () => {
+  for (const saved of [undefined, 'builtin', 'mpv', 'libmedia']) {
+    assert.equal(engineFor('Vega TV', false, saved, 'amazon-vega'), 'builtin');
+  }
+});
+
+test('webOS retains its Libmedia default', () => {
+  assert.equal(engineFor('webOS', false, undefined, 'webos'), 'libmedia');
 });

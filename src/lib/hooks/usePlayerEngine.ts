@@ -25,7 +25,9 @@ export function usePlayerEngine(
   opts?: UsePlayerEngineOptions,
   requestedEngineKind: "builtin" | "libmedia" = "builtin",
 ) {
-  const engineKind = import.meta.env.VITE_TV_HOST ? 'libmedia' : requestedEngineKind;
+  const engineKind = import.meta.env.VITE_TV_HOST === 'webos'
+    ? 'libmedia'
+    : requestedEngineKind;
   const runtimeError = engineKind === 'libmedia' ? getLibmediaRuntimeError() : null;
   const libmediaAdapterRef=useRef<typeof LibmediaPlayerAdapter|null>(null);
   const [libmediaReady,setLibmediaReady]=useState(false);

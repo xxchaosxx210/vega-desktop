@@ -64,6 +64,9 @@ export function useDialogFocusBoundary({
     const tryFocusChild = () => {
       if (!mounted) return;
       if (preferredChildFocusKey && doesFocusableExist(preferredChildFocusKey)) {
+        if (import.meta.env.VITE_TV_HOST === "amazon-vega") {
+          ref.current?.focus({ preventScroll: true });
+        }
         setFocus(preferredChildFocusKey);
       } else if (attempts < maxAttempts) {
         attempts++;
@@ -79,7 +82,7 @@ export function useDialogFocusBoundary({
       mounted = false;
       window.clearTimeout(timer);
     };
-  }, [isOpen, preferredChildFocusKey, focusSelf, autoFocusDelay]);
+  }, [isOpen, preferredChildFocusKey, focusSelf, autoFocusDelay, ref]);
 
   // Restore focus to trigger button on dialog close
   const prevOpenRef = useRef(isOpen);

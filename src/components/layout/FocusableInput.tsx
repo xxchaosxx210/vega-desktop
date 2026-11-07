@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useFocusable } from "@noriginmedia/norigin-spatial-navigation-react";
 import {
   pause,
@@ -39,15 +39,26 @@ export const FocusableInput: React.FC<FocusableInputProps> = ({
   const [isTyping, setIsTyping] = useState(false);
   const nativeInputRef = useRef<HTMLInputElement>(null);
 
+  const typingRef = useRef(false);
+  useEffect(() => {
+    return () => {
+      if (typingRef.current) resume();
+    };
+  }, []);
+
   const beginTyping = () => {
+    const input = nativeInputRef.current;
+    if (!input || disabled) return;
+    typingRef.current = true;
     pause();
+    input.readOnly = false;
     setIsTyping(true);
-    window.setTimeout(() => {
-      nativeInputRef.current?.focus();
-    }, 50);
+    // Keep native keyboard activation within the remote Select event.
+    input.focus();
   };
 
   const finishTyping = () => {
+    typingRef.current = false;
     setIsTyping(false);
     resume();
   };

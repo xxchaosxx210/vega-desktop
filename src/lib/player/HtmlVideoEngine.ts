@@ -1572,11 +1572,11 @@ export class HtmlVideoEngine implements PlayerEngine {
 
   private async startHlsStream(source: string, options?: PlayerEngineOptions): Promise<void> {
     this.cleanupMse();
-    const port = await this.getProxyPort();
     const hasHeaders = Object.keys(this.currentHeaders).length > 0;
 
     let hlsUrl = source;
     if (hasHeaders) {
+      const port = await this.getProxyPort();
       const params = new URLSearchParams();
       params.set("url", source);
       const referer = this.currentHeaders.Referer || this.currentHeaders.referer;
